@@ -1,0 +1,34 @@
+# CLAUDE.md — Starter template
+
+**Copy this to `~/.claude/CLAUDE.md` (global) and trim to under 30 lines.**
+
+Anthropic's hard-warning fires at 40 KB (~400 lines). The model's attention degrades long before that. Keep this file ruthlessly small. Move anything project-specific to `<project>/CLAUDE.md`. Move anything personal to `<project>/CLAUDE.local.md` (gitignored).
+
+---
+
+## Identity
+I am [role]. Primary work: [domain]. Optimise for capability, not output volume.
+
+## Writing style
+- Never use em dashes. Use colons, semicolons, commas, parentheses.
+- Default to succinct. No preamble, no trailing summary.
+- For emails and copy-paste: plain text. No markdown asterisks or headings.
+
+## Path shortcuts
+- work = /Users/me/work
+- archive = /Users/me/work/archive
+
+## Behaviour
+- Match scope. A bug fix does not need refactoring. A note does not need a doc.
+- For exploratory questions, 2-3 sentences with a recommendation. Do not implement without agreement.
+- Verify before claiming work is done. Evidence over assertion.
+- Run the cheapest model that can handle the task. Haiku for mechanical work, Sonnet for synthesis, Opus only for tradeoffs.
+
+## Hard prohibitions
+- Never modify `~/.dropbox/` or `~/.dropbox-master/`.
+- Never run `xattr`, `chmod -R`, `chown -R`, or recursive `touch` inside `~/Dropbox/` or `~/Library/CloudStorage/Dropbox/`.
+- Never commit `.env`, credentials, or any file with an inline API key.
+
+---
+
+That is enough. Resist the urge to add more until you have actually felt the lack.

@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>HARNESS — The Claude Code Configuration Kit</title>
+<meta name="description" content="The definitive Claude Code configuration kit. Seven layers, four enforced primitives, stress-tested against three independent deep-research passes. Open, MIT-licensed." />
+<meta property="og:title" content="HARNESS — The Claude Code Configuration Kit" />
+<meta property="og:description" content="Agent = Model + Harness. The model is intelligence; the harness is everything else. Build the harness." />
+<meta property="og:type" content="website" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a1045'/%3E%3Ctext x='16' y='22' font-family='Helvetica,Arial' font-size='18' font-weight='800' text-anchor='middle' fill='%23ffffff'%3EH%3C/text%3E%3C/svg%3E" />
+<style>
+  :root {
+    --base: #0a1045;
+    --deep: #060a2e;
+    --panel: #121a67;
+    --wire: #5668e0;
+    --pop: #0006aa;
+    --text: #eef1f8;
+    --dim: #aab2d8;
+    --rule: rgba(86,104,224,0.18);
+    --strong: #ffffff;
+    --code-bg: #060a2e;
+  }
+  *,*::before,*::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--base);
+    color: var(--text);
+    font: 16px/1.6 -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  a { color: var(--strong); text-decoration: none; border-bottom: 1px solid var(--wire); transition: border-color .15s ease; }
+  a:hover { border-bottom-color: var(--strong); }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+  /* NAV */
+  nav.top {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(10,16,69,0.78); backdrop-filter: saturate(180%) blur(14px); -webkit-backdrop-filter: saturate(180%) blur(14px);
+    border-bottom: 1px solid var(--rule);
+  }
+  nav.top .inner { display: flex; align-items: center; justify-content: space-between; padding: 14px 24px; max-width: 1100px; margin: 0 auto; }
+  nav.top .brand { font-weight: 800; letter-spacing: 0.04em; }
+  nav.top a { border: none; color: var(--dim); margin-left: 22px; font-size: 14px; }
+  nav.top a:hover { color: var(--strong); }
+  nav.top .brand a { color: var(--strong); margin-left: 0; }
+  @media (max-width: 640px) { nav.top a.hide-sm { display: none; } }
+
+  /* HERO */
+  header.hero {
+    background:
+      radial-gradient(ellipse 60% 50% at 70% 0%, rgba(0,6,170,0.35) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 10% 100%, rgba(18,26,103,0.5) 0%, transparent 60%),
+      linear-gradient(180deg, var(--base) 0%, var(--deep) 100%);
+    padding: 110px 0 88px;
+    border-bottom: 1px solid var(--rule);
+    position: relative;
+    overflow: hidden;
+  }
+  header.hero::before {
+    content: "";
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(86,104,224,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(86,104,224,0.06) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 30%, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 30%, transparent 80%);
+    pointer-events: none;
+  }
+  header.hero .eyebrow {
+    color: var(--wire); font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 700; margin: 0 0 18px;
+  }
+  header.hero h1 {
+    font-size: clamp(40px, 6.5vw, 76px);
+    line-height: 1.04;
+    letter-spacing: -0.025em;
+    font-weight: 800;
+    color: var(--strong);
+    margin: 0 0 22px;
+    max-width: 900px;
+  }
+  header.hero h1 .accent { color: var(--wire); }
+  header.hero p.lede {
+    font-size: clamp(17px, 1.8vw, 21px);
+    line-height: 1.5;
+    color: var(--dim);
+    max-width: 720px;
+    margin: 0 0 32px;
+  }
+  header.hero p.lede em { color: var(--strong); font-style: normal; font-weight: 600; }
+  .ctas { display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn {
+    display: inline-block; padding: 14px 22px; border-radius: 10px;
+    font-weight: 600; font-size: 15px; letter-spacing: -0.005em;
+    text-decoration: none; border: 1px solid transparent; transition: transform .12s ease, background .15s ease, border-color .15s ease;
+  }
+  .btn.primary { background: var(--pop); color: #fff; border-color: var(--pop); }
+  .btn.primary:hover { background: #00077c; }
+  .btn.secondary { background: transparent; color: var(--strong); border-color: var(--wire); }
+  .btn.secondary:hover { border-color: var(--strong); background: rgba(86,104,224,0.1); }
+  .btn:active { transform: translateY(1px); }
+  .btn .arrow { display:inline-block; margin-left: 6px; transition: transform .15s ease; }
+  .btn:hover .arrow { transform: translateX(3px); }
+
+  /* CALLOUT */
+  .callout {
+    margin-top: 56px; padding: 24px 26px;
+    background: rgba(18,26,103,0.45);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    max-width: 880px;
+    font-size: 15.5px;
+    color: var(--text);
+  }
+  .callout strong { color: var(--strong); }
+  .callout code {
+    background: var(--code-bg); border: 1px solid var(--rule); padding: 1px 6px; border-radius: 4px;
+    font: 13.5px/1.5 ui-monospace,Menlo,Monaco,"SF Mono",Consolas,monospace; color: #fff;
+  }
+
+  /* SECTION SCAFFOLD */
+  section { padding: 96px 0; border-bottom: 1px solid var(--rule); }
+  section.dark { background: var(--deep); }
+  section h2 {
+    font-size: clamp(28px, 3.5vw, 40px);
+    letter-spacing: -0.02em; font-weight: 800; color: var(--strong);
+    margin: 0 0 14px;
+  }
+  section .eyebrow { color: var(--wire); font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 700; margin: 0 0 14px; }
+  section p.intro { font-size: 17px; color: var(--dim); max-width: 720px; margin: 0 0 40px; }
+  section p.intro em { color: var(--strong); font-style: normal; font-weight: 600; }
+
+  /* LAYERS */
+  .layers { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; }
+  @media (max-width: 760px) { .layers { grid-template-columns: 1fr; } }
+  .layer {
+    background: rgba(18,26,103,0.4);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    padding: 22px 24px;
+    transition: transform .15s ease, border-color .15s ease, background .15s ease;
+  }
+  .layer:hover { transform: translateY(-2px); border-color: var(--wire); background: rgba(18,26,103,0.6); }
+  .layer .n {
+    display: inline-block; background: var(--pop); color: #fff;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.06em;
+    padding: 3px 9px; border-radius: 5px; margin-bottom: 12px;
+  }
+  .layer h3 { font-size: 19px; font-weight: 700; color: var(--strong); margin: 0 0 6px; letter-spacing: -0.01em; }
+  .layer .type { color: var(--wire); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; margin-bottom: 8px; }
+  .layer p { margin: 0; color: var(--dim); font-size: 14.5px; line-height: 1.55; }
+
+  /* AUTHORS */
+  .authors { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 16px; }
+  @media (max-width: 860px) { .authors { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 460px) { .authors { grid-template-columns: 1fr; } }
+  .author {
+    background: rgba(18,26,103,0.35);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    padding: 20px 22px;
+  }
+  .author .name { font-size: 18px; font-weight: 700; color: var(--strong); margin: 0 0 4px; }
+  .author .role { color: var(--wire); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; margin-bottom: 10px; }
+  .author p { margin: 0; color: var(--dim); font-size: 14px; line-height: 1.55; }
+
+  /* VALIDATION */
+  .vrun-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 16px; }
+  @media (max-width: 760px) { .vrun-grid { grid-template-columns: 1fr; } }
+  .vrun {
+    background: rgba(18,26,103,0.35);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    padding: 20px 22px;
+  }
+  .vrun .provider { color: var(--wire); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; margin-bottom: 8px; }
+  .vrun .stat { font-size: 32px; font-weight: 800; color: var(--strong); margin: 0 0 6px; letter-spacing: -0.02em; }
+  .vrun p { color: var(--dim); font-size: 14px; margin: 0; }
+
+  /* CORRECTIONS */
+  .corrections { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 880px; }
+  @media (max-width: 760px) { .corrections { grid-template-columns: 1fr; } }
+  .correction {
+    background: rgba(0,6,170,0.18);
+    border-left: 3px solid var(--wire);
+    padding: 14px 18px;
+    border-radius: 0 8px 8px 0;
+  }
+  .correction .label { color: var(--wire); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
+  .correction p { color: var(--text); margin: 0; font-size: 14.5px; line-height: 1.5; }
+
+  /* DOWNLOAD GRID */
+  .downloads { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 16px; }
+  @media (max-width: 860px) { .downloads { grid-template-columns: 1fr; } }
+  .download {
+    background: rgba(18,26,103,0.4);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    padding: 24px;
+    transition: border-color .15s ease, transform .15s ease, background .15s ease;
+    text-decoration: none; color: inherit; display: block;
+    border-bottom: 1px solid var(--rule);
+  }
+  .download:hover { border-color: var(--wire); transform: translateY(-2px); background: rgba(18,26,103,0.6); }
+  .download h3 { font-size: 19px; font-weight: 700; color: var(--strong); margin: 0 0 6px; letter-spacing: -0.01em; }
+  .download .meta { color: var(--wire); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; margin-bottom: 12px; }
+  .download p { margin: 0; color: var(--dim); font-size: 14.5px; line-height: 1.55; }
+  .download .open { color: var(--wire); font-size: 13px; margin-top: 12px; display: inline-block; font-weight: 600; }
+
+  /* FOOTER */
+  footer.site {
+    padding: 40px 0 56px;
+    color: var(--dim);
+    font-size: 13.5px;
+    background: var(--deep);
+  }
+  footer.site p { margin: 0 0 8px; }
+
+  /* SMALL UTIL */
+  .mono { font-family: ui-monospace,Menlo,Monaco,"SF Mono",Consolas,monospace; }
+  .pop { color: var(--strong); }
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="inner">
+    <div class="brand"><a href="#top">HARNESS</a></div>
+    <div>
+      <a href="#what" class="hide-sm">What</a>
+      <a href="#layers" class="hide-sm">Seven layers</a>
+      <a href="#validation" class="hide-sm">Validation</a>
+      <a href="#download">Download</a>
+      <a href="https://github.com/victordelrosal/harness" target="_blank" rel="noopener">GitHub →</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="container">
+    <p class="eyebrow">v0.1 · 15 May 2026 · open · MIT</p>
+    <h1>The model is intelligence. <span class="accent">The harness is everything else.</span></h1>
+    <p class="lede">HARNESS is an open kit of working configurations, hooks, skills, and documents for getting Claude Code to do reliable, repeatable work. It is opinionated, evidence-tested, and built backwards from real failures rather than forwards from wishful features.</p>
+    <div class="ctas">
+      <a class="btn primary" href="HANDBOOK.md">Read the handbook <span class="arrow">→</span></a>
+      <a class="btn secondary" href="https://github.com/victordelrosal/harness" target="_blank" rel="noopener">View on GitHub</a>
+      <a class="btn secondary" href="CHEAT-SHEET.html">Cheat sheet</a>
+    </div>
+
+    <div class="callout">
+      <strong>Five-minute version.</strong> Build seven layers of harness in this order:
+      <code>memory → skills → permissions/hooks → subagents/MCP → statusline</code>. Each one delivers value before the next. The full handbook is twenty-five minutes. The starter kit is twelve files and one afternoon.
+    </div>
+  </div>
+</header>
+
+<section id="what">
+  <div class="container">
+    <p class="eyebrow">Why this exists</p>
+    <h2>It is not a model problem. It is a configuration problem.</h2>
+    <p class="intro">The single most important claim in the field, from Addy Osmani: <em>a decent model with a great harness beats a great model with a bad harness.</em> Most agent failures are not the model being stupid; they are the harness being thin. Missing context, missing tools, missing feedback, missing guardrails. That is good news. The harness is the part you control.</p>
+    <p class="intro">HARNESS distils what is known about building that harness in May 2026. Seven layers, each with concrete files. Two enforced primitives (hooks and permission deny rules) so discipline becomes part of the environment instead of a hope. The kit was built backwards from real practitioner failures, then stress-tested against three independent deep-research providers the same day it was written.</p>
+  </div>
+</section>
+
+<section id="layers" class="dark">
+  <div class="container">
+    <p class="eyebrow">The architecture</p>
+    <h2>Seven layers, one closed loop.</h2>
+    <p class="intro">Birgitta Böckeler's framework: every harness control is either a <em>guide</em> (feedforward, steers before the agent acts) or a <em>sensor</em> (feedback, observes after). Build both. Guides without sensors is hope. Sensors without guides is thrashing.</p>
+
+    <div class="layers">
+      <div class="layer">
+        <span class="n">01</span>
+        <div class="type">Guide</div>
+        <h3>Memory · CLAUDE.md</h3>
+        <p>Three files, three scopes. Global &lt;30 lines, project source-controlled, local gitignored. Read as context, not enforced as config.</p>
+      </div>
+      <div class="layer">
+        <span class="n">02</span>
+        <div class="type">Guide</div>
+        <h3>Skills</h3>
+        <p>Reusable recipes loaded on-demand by trigger phrase. Build the second time you do something. Seven good skills beat seventy half-built ones.</p>
+      </div>
+      <div class="layer">
+        <span class="n">03</span>
+        <div class="type">Guide · Orchestration</div>
+        <h3>Subagents</h3>
+        <p>Isolated parallel sessions with their own context. Plan, Explore, code-reviewer, general-purpose. Route to the cheapest model that can do the job.</p>
+      </div>
+      <div class="layer">
+        <span class="n">04</span>
+        <div class="type">Tools</div>
+        <h3>MCP servers</h3>
+        <p>4–6 always-on. Per-project enablement for money, email, customer data. Auth-scope minimisation everywhere.</p>
+      </div>
+      <div class="layer">
+        <span class="n">05</span>
+        <div class="type">Sensor · Enforced</div>
+        <h3>Hooks</h3>
+        <p>Deterministic shell scripts on lifecycle events. PreToolUse fires before any permission check. The one place where you get guaranteed behaviour.</p>
+      </div>
+      <div class="layer">
+        <span class="n">06</span>
+        <div class="type">Sensor · Enforced</div>
+        <h3>Permissions</h3>
+        <p>Six modes. Deny rules survive <span class="mono">--dangerously-skip-permissions</span>. Build the deny list first; promote frequently-asked commands to allow.</p>
+      </div>
+      <div class="layer">
+        <span class="n">07</span>
+        <div class="type">Observability</div>
+        <h3>Statusline + Output styles</h3>
+        <p>Show model, context-remaining, cost, mode. Prevents the silent footgun of running in the wrong mode.</p>
+      </div>
+      <div class="layer">
+        <span class="n">+</span>
+        <div class="type">Composes with the above</div>
+        <h3>Plugins · slash commands · git worktrees</h3>
+        <p>Load-bearing primitives that compose with the seven. The decomposition is pedagogical; the inventory keeps growing.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="validation">
+  <div class="container">
+    <p class="eyebrow">Stress test</p>
+    <h2>The kit was adversarially validated the day it was written.</h2>
+    <p class="intro">41 hypotheses, each falsifiable, sent to three independent deep-research providers with the explicit instruction to surface disconfirming evidence as eagerly as confirming. Where they agreed, the verdict held. Where they disagreed, primary sources won. Twelve corrections were folded back. Read the full appendix in <a href="VALIDATION.md">VALIDATION.md</a>.</p>
+
+    <div class="vrun-grid">
+      <div class="vrun">
+        <div class="provider">Anthropic · Deep Research</div>
+        <div class="stat">~50 URLs</div>
+        <p>Four arXiv papers cited. Two substantive corrections found. Most rigorous of the three.</p>
+      </div>
+      <div class="vrun">
+        <div class="provider">Google · Deep Research</div>
+        <div class="stat">25 sources</div>
+        <p>Strong tables, confirmed the missing sixth permission mode independently. Surfaced one false-negative hypothesis.</p>
+      </div>
+      <div class="vrun">
+        <div class="provider">OpenAI · Deep Research</div>
+        <div class="stat">24 footnotes</div>
+        <p>Thinnest of the three. Confirmed the defensible core; weaker on long-tail claims.</p>
+      </div>
+    </div>
+
+    <p class="intro" style="margin-top: 48px;"><strong style="color:var(--strong)">Corrections that made it back into the handbook:</strong></p>
+
+    <div class="corrections">
+      <div class="correction">
+        <div class="label">Factual error fixed</div>
+        <p>A <strong>sixth permission mode</strong> (<span class="mono">auto</span>) shipped 2026-03-24. The original draft listed only five.</p>
+      </div>
+      <div class="correction">
+        <div class="label">Factual error fixed</div>
+        <p>The full control pipeline is <strong>Hooks → Deny → Allow → Ask → Mode</strong>, not just Deny → Ask → Allow.</p>
+      </div>
+      <div class="correction">
+        <div class="label">Overclaim qualified</div>
+        <p>50% token reduction from model routing → <strong>40–70% on research tasks; can be negative ROI on small mechanical tasks</strong>.</p>
+      </div>
+      <div class="correction">
+        <div class="label">Overclaim qualified</div>
+        <p>Project-revenue claim retired. <strong>Single-practitioner data, not a base rate.</strong></p>
+      </div>
+      <div class="correction">
+        <div class="label">Missing primitive added</div>
+        <p><strong>Anthropic devcontainer</strong> as canonical safe sandbox for <span class="mono">--dangerously-skip-permissions</span>.</p>
+      </div>
+      <div class="correction">
+        <div class="label">Missing anti-pattern added</div>
+        <p><strong>Skill and MCP supply-chain risk.</strong> Anthropic's own skills docs warn about malicious skills.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="download" class="dark">
+  <div class="container">
+    <p class="eyebrow">The artefacts</p>
+    <h2>Take what you need.</h2>
+    <p class="intro">Every deliverable is open, MIT-licensed, and designed to be lifted directly into your <span class="mono">~/.claude/</span> directory. Working files, not reference documentation.</p>
+
+    <div class="downloads">
+      <a class="download" href="HANDBOOK.md">
+        <div class="meta">Long-form · 25 min</div>
+        <h3>Handbook</h3>
+        <p>The full guide. Seven layers, five archetypes, the 80/20 hacks, anti-patterns, the capability test. Reference.</p>
+        <span class="open">Open HANDBOOK.md →</span>
+      </a>
+      <a class="download" href="GETTING-STARTED.md">
+        <div class="meta">Build path · 8 min</div>
+        <h3>Getting Started</h3>
+        <p>Six weeks. One layer per week. Each week leaves you measurably more capable than the last.</p>
+        <span class="open">Open GETTING-STARTED.md →</span>
+      </a>
+      <a class="download" href="CHEAT-SHEET.html">
+        <div class="meta">Single page · 2 min</div>
+        <h3>Cheat Sheet</h3>
+        <p>Printable. Pin to your wall. All the moves on one screen.</p>
+        <span class="open">Open CHEAT-SHEET.html →</span>
+      </a>
+      <a class="download" href="THEORY.md">
+        <div class="meta">Theory · 12 min</div>
+        <h3>Theory</h3>
+        <p>What a harness is and why it matters. Cross-checked against Böckeler, Osmani, Trivedy, Anthropic.</p>
+        <span class="open">Open THEORY.md →</span>
+      </a>
+      <a class="download" href="starter-kit/">
+        <div class="meta">Files · drop-in</div>
+        <h3>Starter Kit</h3>
+        <p>CLAUDE.md template, settings.json with deny-list, two PreToolUse hooks, four subagents, INDEX.md template.</p>
+        <span class="open">Browse starter-kit/ →</span>
+      </a>
+      <a class="download" href="VALIDATION.md">
+        <div class="meta">Methodology · 8 min</div>
+        <h3>Validation Appendix</h3>
+        <p>How the kit was stress-tested. The corrections that were folded back. Run your own pass.</p>
+        <span class="open">Open VALIDATION.md →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section id="authors">
+  <div class="container">
+    <p class="eyebrow">Authors</p>
+    <h2>Four agents, one panel, one human director.</h2>
+    <p class="intro">The kit was authored by a panel of AI agents working in parallel sessions, then reviewed against each other before publishing. Human direction throughout. First names only; the work is what matters.</p>
+
+    <div class="authors">
+      <div class="author">
+        <p class="name">Lars</p>
+        <div class="role">Framing · Academic rigour</div>
+        <p>Led the architecture of the handbook. Insisted on the capability test. Wrote the closing argument.</p>
+      </div>
+      <div class="author">
+        <p class="name">Theo</p>
+        <div class="role">Engineering · Hooks</div>
+        <p>Built the starter kit. Wrote the two PreToolUse hooks. Drafted the settings.json deny rules.</p>
+      </div>
+      <div class="author">
+        <p class="name">Felix</p>
+        <div class="role">Security review</div>
+        <p>Locked the deny list. Reviewed the secret-scan patterns. Surfaced the auth-scope minimisation principle.</p>
+      </div>
+      <div class="author">
+        <p class="name">Rian</p>
+        <div class="role">Positioning · Copy</div>
+        <p>Shaped the public narrative, the cheat sheet, and this landing page. Made the kit findable, not just usable.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="container">
+    <p><strong style="color:var(--strong)">HARNESS</strong> · v0.1 · 15 May 2026 · MIT licence · made in Westport, Ireland</p>
+    <p>Open issues at <a href="https://github.com/victordelrosal/harness/issues" target="_blank" rel="noopener">github.com/victordelrosal/harness/issues</a>. The Ratchet Principle applies: every observed failure becomes a tighter rule in the next release.</p>
+    <p>Not affiliated with Anthropic. Not a replacement for the Claude Code docs. Read them. This kit assumes you have.</p>
+  </div>
+</footer>
+
+</body>
+</html>

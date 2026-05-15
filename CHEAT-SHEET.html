@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>HARNESS — Cheat Sheet</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a1045'/%3E%3Ctext x='16' y='22' font-family='Helvetica,Arial' font-size='18' font-weight='800' text-anchor='middle' fill='%23ffffff'%3EH%3C/text%3E%3C/svg%3E" />
+<style>
+  :root {
+    --base: #0a1045;
+    --deep: #060a2e;
+    --panel: #121a67;
+    --wire: #5668e0;
+    --pop: #0006aa;
+    --text: #eef1f8;
+    --dim: #aab2d8;
+    --rule: rgba(86,104,224,0.25);
+    --code-bg: #060a2e;
+  }
+  *,*::before,*::after { box-sizing: border-box; }
+  html,body { margin:0; padding:0; }
+  body {
+    background: linear-gradient(180deg,var(--base) 0%,var(--deep) 100%);
+    color: var(--text);
+    font: 14px/1.55 -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    padding: 32px 24px 64px;
+  }
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+  header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 24px;
+  }
+  h1 {
+    font-size: 32px;
+    letter-spacing: -0.02em;
+    font-weight: 800;
+    margin: 0;
+  }
+  .tag {
+    color: var(--dim);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .lede {
+    color: var(--dim);
+    font-size: 15px;
+    margin: 0 0 24px;
+    max-width: 720px;
+  }
+  .lede em { color: #fff; font-style: normal; font-weight: 600; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 18px;
+  }
+  @media (max-width: 880px) { .grid { grid-template-columns: 1fr; } }
+  section.card {
+    background: rgba(18,26,103,0.55);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    padding: 18px 20px 16px;
+  }
+  section.card h2 {
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--wire);
+    margin: 0 0 12px;
+    font-weight: 700;
+  }
+  section.card h2 .num {
+    display: inline-block;
+    min-width: 22px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    background: var(--pop);
+    color: #fff;
+    border-radius: 5px;
+    font-size: 12px;
+    margin-right: 8px;
+    font-weight: 700;
+  }
+  ul.tight, ol.tight { padding-left: 18px; margin: 4px 0 0; }
+  ul.tight li, ol.tight li { margin-bottom: 6px; }
+  code, pre, kbd {
+    font: 12.5px/1.5 ui-monospace,Menlo,Monaco,"SF Mono",Consolas,monospace;
+    color: #fff;
+  }
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin: 8px 0 0;
+    overflow-x: auto;
+  }
+  code.inline {
+    background: rgba(6,10,46,0.6);
+    border: 1px solid var(--rule);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+  strong { color: #fff; }
+  .pop { color: #fff; }
+  .pop-bg { background: var(--pop); color: #fff; padding: 1px 6px; border-radius: 4px; font-weight: 600; }
+  .pill {
+    display:inline-block;
+    background: rgba(86,104,224,0.18);
+    border: 1px solid var(--rule);
+    padding: 1px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    margin-right: 6px;
+    color: var(--text);
+  }
+  hr.rule { border: 0; border-top: 1px solid var(--rule); margin: 28px 0; }
+  footer {
+    color: var(--dim);
+    font-size: 12px;
+    margin-top: 28px;
+    border-top: 1px solid var(--rule);
+    padding-top: 16px;
+  }
+  a { color: #fff; text-decoration: underline; text-decoration-color: var(--wire); }
+  a:hover { text-decoration-color: #fff; }
+
+  @media print {
+    body { background: #fff; color: #1e1d4c; padding: 12mm; }
+    .wrap { max-width: 100%; }
+    header { border-bottom-color: #6f82d4; }
+    section.card { background: #f6f7fb; border-color: #6f82d4; color: #1e1d4c; }
+    section.card h2 { color: #003399; }
+    section.card h2 .num { background: #003399; color: #fff; }
+    pre, code.inline { background: #eef1f8; border-color: #6f82d4; color: #1e1d4c; }
+    .pop, strong { color: #1e1d4c; }
+    .pop-bg { background: #003399; color: #fff; }
+    .pill { background: #eef1f8; border-color: #6f82d4; color: #1e1d4c; }
+    a { color: #003399; }
+    footer { color: #1e1d4c; border-top-color: #6f82d4; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>HARNESS &nbsp;·&nbsp; Cheat Sheet</h1>
+    <span class="tag">v0.1 &nbsp;·&nbsp; 15 May 2026</span>
+  </header>
+
+  <p class="lede"><em>Agent = Model + Harness.</em> The model is intelligence; the harness is everything else. Below is the configuration you can build in one afternoon. Pin this. The full handbook lives at <a href="HANDBOOK.md">HANDBOOK.md</a>.</p>
+
+  <div class="grid">
+
+    <section class="card">
+      <h2><span class="num">1</span>Memory · CLAUDE.md</h2>
+      <ul class="tight">
+        <li><strong>Three files:</strong> <code class="inline">~/.claude/CLAUDE.md</code> (global, &lt;30 lines), <code class="inline">./CLAUDE.md</code> (project, source-controlled), <code class="inline">./CLAUDE.local.md</code> (personal, gitignored).</li>
+        <li><strong>Treat as context, not enforcement.</strong> Rules here are advice, not law. Hard rules belong in hooks.</li>
+        <li><strong>Anthropic's hard warning fires at 40 KB.</strong> Cut to &lt;60 effective lines.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2><span class="num">2</span>Skills · the system that prompts for you</h2>
+      <ul class="tight">
+        <li>Build a skill the <strong>second time</strong> you do something, not the third.</li>
+        <li>YAML header + 10–30 lines of instructions in <code class="inline">~/.claude/skills/&lt;name&gt;/SKILL.md</code>.</li>
+        <li><span class="pill">Rule of seven</span> Seven good skills beat seventy half-built ones.</li>
+        <li>Use <code class="inline">skill-creator</code> to scaffold. Description = activation trigger; tighten until it fires only when it should.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2><span class="num">3</span>Subagents · isolated context</h2>
+      <ul class="tight">
+        <li><strong>Default four:</strong> <span class="pill">Plan</span> <span class="pill">Explore</span> <span class="pill">code-reviewer</span> <span class="pill">general-purpose</span>.</li>
+        <li><strong>Isolation</strong> is the value — keep main session lean by delegating long research.</li>
+        <li><strong>Model routing:</strong> Haiku for mechanical, Sonnet for synthesis, Opus only for tradeoffs. <span class="pop-bg">40–70%</span> token savings on research tasks; can be negative ROI on small ones.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2><span class="num">4</span>MCP servers · tools, not recipes</h2>
+      <ul class="tight">
+        <li><strong>4–6 always-on</strong> max. More than ~10 measurably degrades attention (MindStudio: 18k token overhead for a standard 5-server stack).</li>
+        <li>Baseline: <span class="pill">filesystem</span> <span class="pill">GitHub</span> <span class="pill">git</span> <span class="pill">fetch</span> <span class="pill">search</span></li>
+        <li><strong>Per-project</strong> for anything that touches money, email, or customer data.</li>
+        <li>Auth-scope minimisation. If a server only needs read, do not give it write.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2><span class="num">5</span>Hooks · the only enforced layer</h2>
+      <ul class="tight">
+        <li><strong>Two on day one:</strong> <code class="inline">PreToolUse</code> on Bash blocking <code class="inline">rm -rf</code>, <code class="inline">chmod -R</code>, <code class="inline">xattr</code>; <code class="inline">PreToolUse</code> on Write/Edit scanning for secrets.</li>
+        <li>Configure in <code class="inline">.claude/settings.json</code>; scripts in <code class="inline">~/.claude/hooks/</code>.</li>
+        <li><strong>Success silent · failures verbose.</strong> Exit 0 to allow; exit 2 with one-line stderr to block.</li>
+        <li>Hooks survive <code class="inline">--dangerously-skip-permissions</code>. They are the safety net.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2><span class="num">6</span>Permissions · the gate</h2>
+      <ul class="tight">
+        <li><strong>Six modes:</strong> default · acceptEdits · plan · <span class="pill">auto (Mar 2026)</span> · dontAsk · bypassPermissions.</li>
+        <li><strong>Order:</strong> Hooks → Deny → Allow → Ask → Mode. <span class="pop-bg">Deny wins.</span></li>
+        <li>Build the <strong>deny list first</strong>. Promote frequently-asked commands to the allow list as you observe them.</li>
+        <li><code class="inline">--dangerously-skip-permissions</code> only in containers / VMs. Anthropic ships a devcontainer for this.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2><span class="num">7</span>Statusline · what you see</h2>
+      <ul class="tight">
+        <li>Custom one-liner via <code class="inline">.claude/statusline.sh</code>.</li>
+        <li>Show: <strong>model</strong>, <strong>context-remaining</strong>, <strong>cost</strong>, <strong>working dir</strong>, <strong>mode</strong>.</li>
+        <li>Mode in the statusline prevents the silent footgun of running in the wrong one.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2><span class="num">8</span>The 80/20 hacks</h2>
+      <ul class="tight">
+        <li><strong>PDF → text first.</strong> <code class="inline">pdftotext path.pdf -</code>. ~10× token reduction on text-bearing PDFs.</li>
+        <li><strong>Reset, do not summarise.</strong> Long sessions degrade past ~60–70% context fill. Write a progress file, <code class="inline">/clear</code>, restart.</li>
+        <li>Two settings.json env tweaks (<em>version-fragile</em>): <code class="inline">CLAUDE_CODE_DISABLE_1M_CONTEXT=1</code>, <code class="inline">CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=80</code>.</li>
+        <li>Concise prompts. 29 words &gt; 500. Targeted edits ("only redo section 3"). New chats for new topics.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2><span class="num">9</span>Anti-patterns</h2>
+      <ul class="tight">
+        <li>Bloated CLAUDE.md (400+ lines). Anthropic warns at 40 KB.</li>
+        <li>MCP hoarding (&gt;10 always-on). Each server adds context overhead.</li>
+        <li>Treating CLAUDE.md as enforcement. It is context. Hooks bind.</li>
+        <li><code class="inline">--dangerously-skip-permissions</code> on host. Use a container.</li>
+        <li>Trusting third-party skills/MCP blindly. Read before installing. Auth-scope minimise.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2><span class="num">10</span>The capability test</h2>
+      <ul class="tight">
+        <li>When the agent is off — am I a sharper thinker, more disciplined operator, better delegator, better systems designer than last month?</li>
+        <li>If yes, the harness is good. If no, it is a crutch.</li>
+        <li><strong>The Ratchet Principle:</strong> every failure becomes a permanent rule. The harness only tightens.</li>
+      </ul>
+    </section>
+
+  </div>
+
+  <hr class="rule" />
+
+  <p class="lede"><strong>Minimum viable harness, twelve files, one afternoon:</strong></p>
+  <pre>~/.claude/
+├── CLAUDE.md                    # &lt;30 lines. Identity, style, paths, behaviour.
+├── settings.json                # Deny list. Two PreToolUse hooks. Statusline.
+├── skills/&lt;name&gt;/SKILL.md       # Five to seven, one per recurring workflow.
+├── agents/                      # Plan, Explore, code-reviewer, general-purpose.
+└── hooks/
+    ├── fs-guard.sh              # Blocks destructive filesystem ops.
+    └── secret-scan.sh           # Blocks committing secrets.
+
+&lt;project&gt;/
+├── CLAUDE.md                    # Project conventions. Source-controlled.
+├── CLAUDE.local.md              # Your overrides. Gitignored.
+├── .claude/settings.json        # Project allow list.
+├── .claude/settings.local.json  # Your personal pre-approvals.
+└── INDEX.md                     # Map of the repo.</pre>
+
+  <footer>
+    <p>HARNESS · authored by Lars, Theo, Felix, Rian · stress-tested against three independent deep-research providers · open at <a href="https://github.com/victordelrosal/harness">github.com/victordelrosal/harness</a> · MIT.</p>
+  </footer>
+</div>
+</body>
+</html>

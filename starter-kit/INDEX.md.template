@@ -1,0 +1,51 @@
+# INDEX.md — repo map
+
+**Copy this to your project root. It is the file Claude reads first to understand the codebase.**
+
+Keep it under 80 lines. It is a *map*, not documentation.
+
+---
+
+## Top-level layout
+
+| Path | Purpose |
+|---|---|
+| `src/` | Application source. Entry point at `src/index.ts`. |
+| `tests/` | Test suites. One file per source module. Pattern: `tests/<module>.test.ts`. |
+| `scripts/` | One-off operational scripts. Run with `npm run <name>`. |
+| `infra/` | Infrastructure-as-code. Terraform / Pulumi / Wrangler configs. |
+| `docs/` | Reader-facing documentation (not for Claude). Architecture decisions, API reference. |
+
+## Key modules
+
+| Module | Entry | Owner |
+|---|---|---|
+| Auth | `src/auth/index.ts` | [team] |
+| Billing | `src/billing/index.ts` | [team] |
+| Data layer | `src/db/index.ts` | [team] |
+
+## Critical commands
+
+| Task | Command |
+|---|---|
+| Install | `npm install` |
+| Dev server | `npm run dev` |
+| Tests | `npm test` |
+| Typecheck | `npm run typecheck` |
+| Lint | `npm run lint` |
+| Build | `npm run build` |
+| Deploy (staging) | `npm run deploy:staging` |
+| Deploy (production) | `npm run deploy` (gated, requires approval) |
+
+## Gotchas
+
+- Secrets in `.env`. Never read out; never write. Reference `.env.example` for shape.
+- Database migrations live in `infra/migrations/`. Never edit a committed migration; always add a new one.
+- Production deploy requires the `OPERATOR` role.
+
+## Recent architectural decisions
+
+See `docs/adr/` for full record. Most-recent two are listed here for fast onboarding:
+
+- ADR-0042: Why we moved off Postgres triggers for billing events. [link to ADR]
+- ADR-0041: Why we wrap the LLM client in a circuit breaker. [link to ADR]

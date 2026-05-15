@@ -1,0 +1,77 @@
+{
+  "//comment": "Starter settings.json for ~/.claude/. Built backwards from real failures. Pair with starter-kit/hooks/.",
+
+  "permissions": {
+    "deny": [
+      "Bash(rm -rf *)",
+      "Bash(rm -rf ~/)",
+      "Bash(rm -rf /)",
+      "Bash(rm -rf .)",
+      "Bash(chmod -R *)",
+      "Bash(chown -R *)",
+      "Bash(xattr *)",
+      "Bash(*--no-verify*)",
+      "Bash(*--no-gpg-sign*)",
+      "Bash(git push --force origin main*)",
+      "Bash(git push --force origin master*)",
+      "Bash(git push -f origin main*)",
+      "Bash(git push -f origin master*)",
+      "Bash(git reset --hard origin/*)",
+      "Bash(* > .env*)",
+      "Write(.env)",
+      "Write(.env.*)",
+      "Write(*credentials*)",
+      "Write(**/secrets/**)",
+      "Write(~/.dropbox/**)",
+      "Write(~/.dropbox-master/**)"
+    ],
+    "ask": [
+      "Bash(git push *)",
+      "Bash(git tag *)",
+      "Bash(npm publish *)",
+      "Bash(pip publish *)",
+      "Bash(cargo publish *)",
+      "Bash(gh release *)",
+      "Bash(curl *--data-binary*)"
+    ],
+    "allow": [
+      "Bash(git status)",
+      "Bash(git diff)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git branch)",
+      "Bash(git show *)",
+      "Bash(ls *)",
+      "Bash(pwd)",
+      "Bash(cat *)",
+      "Bash(head *)",
+      "Bash(tail *)",
+      "Bash(wc *)",
+      "Bash(grep *)",
+      "Bash(rg *)",
+      "Bash(find * -name *)",
+      "Bash(pdftotext *)",
+      "Bash(jq *)"
+    ]
+  },
+
+  "hooks": {
+    "PreToolUse": [
+      { "match": { "tool": "Bash" }, "command": "~/.claude/hooks/fs-guard.sh" },
+      { "match": { "tool": "Write" }, "command": "~/.claude/hooks/secret-scan.sh" },
+      { "match": { "tool": "Edit" }, "command": "~/.claude/hooks/secret-scan.sh" }
+    ]
+  },
+
+  "env": {
+    "//comment": "Two token-discipline tweaks. Version-fragile; verify against current docs.",
+    "CLAUDE_CODE_DISABLE_1M_CONTEXT": "1",
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "80"
+  },
+
+  "statusline": {
+    "type": "command",
+    "command": "~/.claude/statusline.sh",
+    "//comment": "Optional. Build a shell script that reads JSON on stdin and prints one line: model, context-remaining, cost, mode."
+  }
+}
