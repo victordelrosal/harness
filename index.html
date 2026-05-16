@@ -2,525 +2,903 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>HARNESS — The Claude Code Configuration Kit</title>
-<meta name="description" content="The definitive Claude Code configuration kit. Seven layers, four enforced primitives, stress-tested against three independent deep-research passes. Open, MIT-licensed." />
-<meta property="og:title" content="HARNESS — The Claude Code Configuration Kit" />
-<meta property="og:description" content="Agent = Model + Harness. The model is intelligence; the harness is everything else. Build the harness." />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>HARNESS · The Claude Code Configuration Kit</title>
+<meta name="description" content="The model is intelligence. The harness is the work. An open kit of working configurations, hooks, skills, and documents for getting Claude Code to do reliable, repeatable work. MIT-licensed." />
+<meta name="theme-color" content="#0a1045" />
+<meta property="og:title" content="HARNESS · The harness is the work." />
+<meta property="og:description" content="The model is intelligence. The harness is everything else. Build the harness." />
 <meta property="og:type" content="website" />
+<meta property="og:url" content="https://victordelrosal.com/harness/" />
+<meta name="twitter:card" content="summary_large_image" />
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a1045'/%3E%3Ctext x='16' y='22' font-family='Helvetica,Arial' font-size='18' font-weight='800' text-anchor='middle' fill='%23ffffff'%3EH%3C/text%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" />
 <style>
   :root {
-    --base: #0a1045;
-    --deep: #060a2e;
-    --panel: #121a67;
-    --wire: #5668e0;
-    --pop: #0006aa;
-    --text: #eef1f8;
-    --dim: #aab2d8;
-    --rule: rgba(86,104,224,0.18);
-    --strong: #ffffff;
-    --code-bg: #060a2e;
+    --base:        #0a1045;
+    --deep:        #060a2e;
+    --panel:       #121a67;
+    --wire:        #5668e0;
+    --pop:         #0006aa;
+    --text:        #eef1f8;
+    --dim:         #a4adc8;
+    --rule:        rgba(86,104,224,0.16);
+    --rule-strong: rgba(86,104,224,0.34);
+    --strong:      #ffffff;
+    --code-bg:     #060a2e;
+    --ease:        cubic-bezier(0.16, 1, 0.3, 1);
+    --grid-max:    1180px;
+    --gutter:      clamp(1.25rem, 4vw, 2rem);
+    --serif:       "Source Serif 4","Source Serif Pro","Iowan Old Style","Apple Garamond",Georgia,Cambria,"Times New Roman",serif;
+    --sans:        "Inter","SF Pro Text",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
   }
   *,*::before,*::after { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
   body {
     margin: 0;
     background: var(--base);
     color: var(--text);
-    font: 16px/1.6 -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font: 16px/1.6 var(--sans);
+    font-feature-settings: "ss01","cv11","kern";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
   }
-  a { color: var(--strong); text-decoration: none; border-bottom: 1px solid var(--wire); transition: border-color .15s ease; }
+
+  /* SKIP LINK + FOCUS */
+  .skip { position: absolute; left: -9999px; top: 0; z-index: 100; background: var(--strong); color: var(--base); padding: 10px 14px; border-radius: 6px; font-weight: 700; }
+  .skip:focus { left: 16px; top: 16px; }
+  :focus-visible { outline: 2px solid var(--wire); outline-offset: 3px; border-radius: 4px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+  a { color: var(--strong); text-decoration: none; border-bottom: 1px solid var(--rule-strong); transition: border-color .18s var(--ease), color .18s var(--ease); }
   a:hover { border-bottom-color: var(--strong); }
+  a.bare { border: 0; }
 
-  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+  .wrap { max-width: var(--grid-max); margin: 0 auto; padding: 0 var(--gutter); }
+  .mono { font-family: ui-monospace,Menlo,"SF Mono",Consolas,monospace; font-feature-settings: normal; }
+  .small-caps {
+    font-family: var(--sans);
+    font-size: 11.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--wire);
+  }
 
-  /* NAV */
+  /* ─── NAV ─────────────────────────────────────────── */
   nav.top {
     position: sticky; top: 0; z-index: 50;
-    background: rgba(10,16,69,0.78); backdrop-filter: saturate(180%) blur(14px); -webkit-backdrop-filter: saturate(180%) blur(14px);
+    background: rgba(10,16,69,0.78);
+    backdrop-filter: saturate(180%) blur(14px);
+    -webkit-backdrop-filter: saturate(180%) blur(14px);
     border-bottom: 1px solid var(--rule);
   }
-  nav.top .inner { display: flex; align-items: center; justify-content: space-between; padding: 14px 24px; max-width: 1100px; margin: 0 auto; }
-  nav.top .brand { font-weight: 800; letter-spacing: 0.04em; }
-  nav.top a { border: none; color: var(--dim); margin-left: 22px; font-size: 14px; }
+  nav.top .inner {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px var(--gutter);
+    max-width: var(--grid-max); margin: 0 auto;
+  }
+  nav.top .brand {
+    font-weight: 800; letter-spacing: 0.06em; font-size: 14px;
+    color: var(--strong);
+  }
+  nav.top .brand .v { color: var(--wire); font-weight: 600; margin-left: 8px; letter-spacing: 0.08em; }
+  nav.top .links { display: flex; align-items: center; gap: 26px; }
+  nav.top a { border: 0; color: var(--dim); font-size: 14px; }
   nav.top a:hover { color: var(--strong); }
-  nav.top .brand a { color: var(--strong); margin-left: 0; }
-  @media (max-width: 640px) { nav.top a.hide-sm { display: none; } }
+  nav.top .gh {
+    color: var(--strong); font-weight: 600;
+    padding: 7px 14px; border: 1px solid var(--rule-strong); border-radius: 999px;
+  }
+  nav.top .gh:hover { border-color: var(--strong); background: rgba(255,255,255,0.04); }
+  @media (max-width: 720px) {
+    nav.top .links a.hide-sm { display: none; }
+    nav.top .links { gap: 14px; }
+  }
 
-  /* HERO */
+  /* ─── HERO (FRONTISPIECE) ────────────────────────── */
   header.hero {
-    background:
-      radial-gradient(ellipse 60% 50% at 70% 0%, rgba(0,6,170,0.35) 0%, transparent 60%),
-      radial-gradient(ellipse 50% 40% at 10% 100%, rgba(18,26,103,0.5) 0%, transparent 60%),
-      linear-gradient(180deg, var(--base) 0%, var(--deep) 100%);
-    padding: 110px 0 88px;
-    border-bottom: 1px solid var(--rule);
     position: relative;
+    padding: clamp(56px, 9vw, 120px) 0 clamp(56px, 8vw, 96px);
+    background:
+      radial-gradient(ellipse 55% 45% at 75% 5%, rgba(0,6,170,0.30) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 5% 100%, rgba(18,26,103,0.55) 0%, transparent 60%),
+      linear-gradient(180deg, var(--base) 0%, var(--deep) 100%);
+    border-bottom: 1px solid var(--rule);
     overflow: hidden;
   }
   header.hero::before {
     content: "";
     position: absolute; inset: 0;
     background-image:
-      linear-gradient(rgba(86,104,224,0.06) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(86,104,224,0.06) 1px, transparent 1px);
-    background-size: 48px 48px;
-    mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 30%, transparent 80%);
-    -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 30%, transparent 80%);
+      linear-gradient(rgba(86,104,224,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(86,104,224,0.05) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 75% 70% at 50% 35%, #000 30%, transparent 85%);
+    -webkit-mask-image: radial-gradient(ellipse 75% 70% at 50% 35%, #000 30%, transparent 85%);
     pointer-events: none;
   }
-  header.hero .hero-grid {
+  .hero-grid {
+    position: relative;
     display: grid;
-    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
-    gap: 56px;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.95fr);
+    gap: clamp(36px, 5vw, 72px);
+    align-items: start;
+  }
+  @media (max-width: 920px) {
+    .hero-grid { grid-template-columns: 1fr; }
+  }
+
+  .hero-copy { min-width: 0; }
+  .hero-meta {
+    display: flex; flex-wrap: wrap; gap: 18px 22px;
+    margin: 0 0 36px;
     align-items: center;
-    position: relative;
   }
-  @media (max-width: 880px) {
-    header.hero .hero-grid { grid-template-columns: 1fr; gap: 40px; }
+  .hero-meta .item { display: flex; align-items: baseline; gap: 8px; }
+  .hero-meta .k { color: var(--wire); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 700; }
+  .hero-meta .v { color: var(--strong); font-size: 13px; font-weight: 600; letter-spacing: 0.04em; }
+
+  h1.headline {
+    font-family: var(--sans);
+    font-size: clamp(38px, 6.4vw, 80px);
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+    font-weight: 700;
+    color: var(--strong);
+    margin: 0 0 26px;
+    max-width: 14ch;
   }
-  header.hero .hero-copy { min-width: 0; }
-  header.hero .hero-figure {
+  h1.headline .pre {
+    display: block;
+    font-size: clamp(20px, 2.2vw, 28px);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--dim);
+    margin-bottom: 14px;
+    font-family: var(--serif);
+    font-style: italic;
+  }
+  h1.headline .strong {
+    background: linear-gradient(180deg, var(--strong) 0%, var(--strong) 55%, #c3cbef 100%);
+    -webkit-background-clip: text; background-clip: text;
+    color: transparent;
+  }
+  h1.headline .accent { color: var(--wire); }
+
+  p.lede {
+    font-family: var(--serif);
+    font-size: clamp(18px, 1.4vw + 0.5rem, 22px);
+    line-height: 1.55;
+    color: var(--text);
+    max-width: 38ch;
+    margin: 0 0 36px;
+    font-weight: 400;
+  }
+  p.lede em { color: var(--strong); font-style: italic; font-weight: 600; }
+
+  .ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 13px 22px; border-radius: 999px;
+    font-family: var(--sans);
+    font-weight: 600; font-size: 14.5px; letter-spacing: -0.005em;
+    text-decoration: none; border: 1px solid transparent;
+    transition: transform .15s var(--ease), background .18s var(--ease), border-color .18s var(--ease), color .18s var(--ease);
+  }
+  .btn.primary { background: var(--strong); color: var(--base); border-color: var(--strong); }
+  .btn.primary:hover { background: #fff; transform: translateY(-1px); }
+  .btn.secondary { background: transparent; color: var(--strong); border-color: var(--rule-strong); }
+  .btn.secondary:hover { border-color: var(--strong); background: rgba(255,255,255,0.04); transform: translateY(-1px); }
+  .btn .arrow { transition: transform .15s var(--ease); display: inline-block; }
+  .btn:hover .arrow { transform: translateX(3px); }
+  .btn:active { transform: translateY(0); }
+
+  /* hero figure */
+  .hero-figure {
     position: relative;
-    border-radius: 18px;
+    border-radius: 14px;
     overflow: hidden;
-    border: 1px solid var(--rule);
+    border: 1px solid var(--rule-strong);
     box-shadow:
-      0 30px 60px -20px rgba(0,0,0,0.6),
-      0 0 0 1px rgba(86,104,224,0.18) inset;
-    aspect-ratio: 3 / 2;
+      0 30px 60px -22px rgba(0,0,0,0.65),
+      0 0 0 1px rgba(255,255,255,0.02) inset;
+    aspect-ratio: 4 / 5;
     background: var(--deep);
   }
-  header.hero .hero-figure img {
+  .hero-figure img {
     width: 100%; height: 100%;
     object-fit: cover;
     display: block;
-    filter: saturate(0.92) contrast(1.02);
+    filter: saturate(0.9) contrast(1.04);
   }
-  header.hero .hero-figure::after {
+  .hero-figure::after {
     content: "";
     position: absolute; inset: 0;
-    background: linear-gradient(180deg, rgba(10,16,69,0.0) 55%, rgba(10,16,69,0.55) 100%),
-                radial-gradient(ellipse at 0% 100%, rgba(0,6,170,0.25) 0%, transparent 60%);
+    background:
+      linear-gradient(180deg, rgba(10,16,69,0) 50%, rgba(10,16,69,0.75) 100%),
+      radial-gradient(ellipse at 0% 100%, rgba(0,6,170,0.22) 0%, transparent 55%);
     pointer-events: none;
   }
-  header.hero .hero-figure figcaption {
-    position: absolute; left: 14px; bottom: 12px;
-    color: var(--dim);
-    font-size: 11.5px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    font-weight: 700;
-  }
-  header.hero .hero-figure figcaption .dot {
-    display: inline-block; width: 5px; height: 5px; border-radius: 50%;
-    background: var(--wire); margin-right: 8px; vertical-align: middle;
-  }
-  header.hero .eyebrow {
-    color: var(--wire); font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 700; margin: 0 0 18px;
-  }
-  header.hero h1 {
-    font-size: clamp(40px, 6.5vw, 76px);
-    line-height: 1.04;
-    letter-spacing: -0.025em;
-    font-weight: 800;
+  .hero-figure figcaption {
+    position: absolute; left: 18px; right: 18px; bottom: 16px;
+    display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
     color: var(--strong);
-    margin: 0 0 22px;
-    max-width: 900px;
+    font-family: var(--sans);
   }
-  header.hero h1 .accent { color: var(--wire); }
-  header.hero p.lede {
-    font-size: clamp(17px, 1.8vw, 21px);
-    line-height: 1.5;
-    color: var(--dim);
-    max-width: 720px;
-    margin: 0 0 32px;
+  .hero-figure figcaption .label {
+    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 700;
+    color: var(--strong);
+    display: inline-flex; align-items: center; gap: 9px;
+    white-space: nowrap;
   }
-  header.hero p.lede em { color: var(--strong); font-style: normal; font-weight: 600; }
-  .ctas { display: flex; gap: 14px; flex-wrap: wrap; }
-  .btn {
-    display: inline-block; padding: 14px 22px; border-radius: 10px;
-    font-weight: 600; font-size: 15px; letter-spacing: -0.005em;
-    text-decoration: none; border: 1px solid transparent; transition: transform .12s ease, background .15s ease, border-color .15s ease;
+  .hero-figure figcaption .label::before {
+    content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--wire);
   }
-  .btn.primary { background: var(--pop); color: #fff; border-color: var(--pop); }
-  .btn.primary:hover { background: #00077c; }
-  .btn.secondary { background: transparent; color: var(--strong); border-color: var(--wire); }
-  .btn.secondary:hover { border-color: var(--strong); background: rgba(86,104,224,0.1); }
-  .btn:active { transform: translateY(1px); }
-  .btn .arrow { display:inline-block; margin-left: 6px; transition: transform .15s ease; }
-  .btn:hover .arrow { transform: translateX(3px); }
+  .hero-figure figcaption .note {
+    font-family: var(--serif); font-style: italic; font-size: 13.5px; color: rgba(238,241,248,0.92);
+    max-width: 24ch; text-align: right; line-height: 1.45;
+    text-shadow: 0 1px 6px rgba(6,10,46,0.65);
+  }
+  @media (max-width: 920px) {
+    .hero-figure { aspect-ratio: 5 / 4; max-width: 560px; }
+  }
+  @media (max-width: 560px) {
+    .hero-figure figcaption { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .hero-figure figcaption .note { text-align: left; max-width: 32ch; }
+  }
 
-  /* CALLOUT */
-  .callout {
-    margin-top: 56px; padding: 24px 26px;
-    background: rgba(18,26,103,0.45);
-    border: 1px solid var(--rule);
-    border-radius: 14px;
-    max-width: 880px;
-    font-size: 15.5px;
+  /* trust band */
+  .trust {
+    margin-top: clamp(48px, 6vw, 72px);
+    padding-top: 22px;
+    border-top: 1px solid var(--rule);
+    display: grid; grid-template-columns: 1fr auto; gap: 18px 32px; align-items: center;
+  }
+  @media (max-width: 720px) { .trust { grid-template-columns: 1fr; } }
+  .trust .label { color: var(--wire); font-size: 11.5px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 700; }
+  .trust .stats { display: flex; flex-wrap: wrap; gap: 8px 22px; color: var(--text); font-size: 14px; }
+  .trust .stats b { color: var(--strong); font-weight: 700; letter-spacing: -0.005em; }
+  .trust .stats .dot { color: var(--wire); margin: 0 4px; }
+
+  /* ─── SECTIONS ────────────────────────────────────── */
+  section { padding: clamp(72px, 9vw, 120px) 0; border-bottom: 1px solid var(--rule); position: relative; }
+  section.dark { background: var(--deep); }
+  section .eyebrow { color: var(--wire); font-size: 11.5px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 700; margin: 0 0 16px; }
+  section h2 {
+    font-family: var(--sans);
+    font-size: clamp(28px, 3.6vw, 44px);
+    letter-spacing: -0.025em; font-weight: 700;
+    color: var(--strong);
+    margin: 0 0 16px;
+    max-width: 22ch;
+    line-height: 1.08;
+  }
+  section h2 .accent { color: var(--wire); }
+  section .lede {
+    font-family: var(--serif);
+    font-size: clamp(17px, 1.1vw + 0.6rem, 21px);
+    line-height: 1.6;
+    color: var(--text);
+    max-width: 62ch;
+    margin: 0 0 44px;
+    font-weight: 400;
+  }
+  section .lede em { color: var(--strong); font-style: italic; font-weight: 600; }
+
+  /* ─── CONFESSION ─────────────────────────────────── */
+  .confession {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: clamp(28px, 5vw, 64px);
+    align-items: start;
+  }
+  @media (max-width: 880px) { .confession { grid-template-columns: 1fr; } }
+  .confession .marker {
+    position: sticky; top: 110px;
+    font-family: var(--sans);
+    color: var(--wire);
+    font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 700;
+  }
+  .confession .marker .num { display: block; font-size: 64px; line-height: 1; color: var(--strong); letter-spacing: -0.04em; font-weight: 700; margin-bottom: 6px; }
+  .confession-body {
+    font-family: var(--serif);
+    font-size: clamp(18px, 1.2vw + 0.6rem, 22px);
+    line-height: 1.65;
     color: var(--text);
   }
-  .callout strong { color: var(--strong); }
-  .callout code {
-    background: var(--code-bg); border: 1px solid var(--rule); padding: 1px 6px; border-radius: 4px;
-    font: 13.5px/1.5 ui-monospace,Menlo,Monaco,"SF Mono",Consolas,monospace; color: #fff;
+  .confession-body p { margin: 0 0 1.2em; max-width: 56ch; }
+  .confession-body p:last-child { margin-bottom: 0; }
+  .confession-body strong { color: var(--strong); font-weight: 600; }
+  .confession-body em { font-style: italic; color: var(--strong); }
+  .confession-body .pull {
+    margin: 1.6em 0;
+    padding-left: 18px;
+    border-left: 2px solid var(--wire);
+    font-family: var(--sans);
+    font-style: normal;
+    font-weight: 600;
+    font-size: clamp(20px, 1.6vw + 0.5rem, 28px);
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    color: var(--strong);
+    max-width: 22ch;
   }
 
-  /* SECTION SCAFFOLD */
-  section { padding: 96px 0; border-bottom: 1px solid var(--rule); }
-  section.dark { background: var(--deep); }
-  section h2 {
-    font-size: clamp(28px, 3.5vw, 40px);
-    letter-spacing: -0.02em; font-weight: 800; color: var(--strong);
-    margin: 0 0 14px;
-  }
-  section .eyebrow { color: var(--wire); font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 700; margin: 0 0 14px; }
-  section p.intro { font-size: 17px; color: var(--dim); max-width: 720px; margin: 0 0 40px; }
-  section p.intro em { color: var(--strong); font-style: normal; font-weight: 600; }
-
-  /* LAYERS */
-  .layers { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; }
-  @media (max-width: 760px) { .layers { grid-template-columns: 1fr; } }
-  .layer {
-    background: rgba(18,26,103,0.4);
+  /* ─── LAYERS ─────────────────────────────────────── */
+  .layers {
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    background: var(--rule);
     border: 1px solid var(--rule);
     border-radius: 14px;
-    padding: 22px 24px;
-    transition: transform .15s ease, border-color .15s ease, background .15s ease;
+    overflow: hidden;
   }
-  .layer:hover { transform: translateY(-2px); border-color: var(--wire); background: rgba(18,26,103,0.6); }
+  @media (max-width: 720px) { .layers { grid-template-columns: 1fr; } }
+  .layer {
+    background: rgba(10,16,69,0.6);
+    padding: 28px 28px 26px;
+    display: flex; flex-direction: column; gap: 8px;
+    transition: background .2s var(--ease);
+  }
+  .layer:hover { background: rgba(18,26,103,0.55); }
+  .layer .row {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    margin-bottom: 4px;
+  }
   .layer .n {
-    display: inline-block; background: var(--pop); color: #fff;
-    font-size: 12px; font-weight: 700; letter-spacing: 0.06em;
-    padding: 3px 9px; border-radius: 5px; margin-bottom: 12px;
+    font-family: var(--sans);
+    font-size: 11.5px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 700;
+    color: var(--wire);
   }
-  .layer h3 { font-size: 19px; font-weight: 700; color: var(--strong); margin: 0 0 6px; letter-spacing: -0.01em; }
-  .layer .type { color: var(--wire); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; margin-bottom: 8px; }
-  .layer p { margin: 0; color: var(--dim); font-size: 14.5px; line-height: 1.55; }
+  .layer .n b { color: var(--strong); font-weight: 700; letter-spacing: -0.02em; font-size: 13px; margin-right: 8px; }
+  .layer .kind {
+    font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 700;
+    padding: 4px 9px; border-radius: 999px;
+    border: 1px solid var(--rule-strong); color: var(--dim);
+  }
+  .layer .kind.sensor { color: var(--strong); background: var(--pop); border-color: var(--pop); }
+  .layer h3 {
+    font-family: var(--sans);
+    font-size: 21px; font-weight: 700;
+    color: var(--strong);
+    margin: 4px 0 4px;
+    letter-spacing: -0.015em;
+  }
+  .layer p {
+    margin: 0;
+    color: var(--dim);
+    font-size: 14.5px;
+    line-height: 1.55;
+  }
+  .layer .skip {
+    position: static; left: auto; top: auto; background: transparent; color: var(--wire);
+    margin-top: 10px;
+    font-family: var(--sans);
+    font-size: 12.5px; font-weight: 500;
+    padding: 0; border-radius: 0;
+    border-top: 1px dashed var(--rule);
+    padding-top: 10px;
+  }
+  .layer .skip b { color: var(--strong); font-weight: 600; }
 
-  /* AUTHORS */
-  .authors { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 16px; }
+  .loop {
+    margin-top: 28px;
+    padding: 22px 26px;
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    background: rgba(0,6,170,0.10);
+    font-family: var(--serif);
+    font-size: 16.5px; line-height: 1.55;
+    color: var(--text);
+    max-width: 720px;
+  }
+  .loop strong { color: var(--strong); }
+
+  /* ─── ARTEFACTS ──────────────────────────────────── */
+  .artefacts {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+  }
+  @media (max-width: 920px) { .artefacts { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .artefacts { grid-template-columns: 1fr; } }
+  .artefact {
+    display: flex; flex-direction: column; gap: 8px;
+    padding: 24px 24px 22px;
+    background: rgba(18,26,103,0.35);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    text-decoration: none; color: inherit;
+    transition: transform .18s var(--ease), border-color .18s var(--ease), background .18s var(--ease);
+    border-bottom: 1px solid var(--rule);
+  }
+  .artefact:hover { transform: translateY(-3px); border-color: var(--rule-strong); background: rgba(18,26,103,0.55); }
+  .artefact .meta { color: var(--wire); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 700; }
+  .artefact h3 { font-family: var(--sans); font-size: 19px; font-weight: 700; color: var(--strong); margin: 4px 0 0; letter-spacing: -0.015em; }
+  .artefact p { margin: 4px 0 8px; color: var(--dim); font-size: 14px; line-height: 1.55; }
+  .artefact .open { color: var(--strong); font-size: 13px; font-weight: 600; margin-top: auto; display: inline-flex; align-items: center; gap: 6px; }
+  .artefact .open .arrow { transition: transform .15s var(--ease); }
+  .artefact:hover .open .arrow { transform: translateX(3px); }
+
+  /* ─── STRESS TEST ────────────────────────────────── */
+  .vrun-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-bottom: 56px; }
+  @media (max-width: 760px) { .vrun-grid { grid-template-columns: 1fr; } }
+  .vrun {
+    padding: 26px 24px;
+    background: rgba(10,16,69,0.5);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+  }
+  .vrun .provider { color: var(--wire); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 700; margin-bottom: 14px; }
+  .vrun .stat {
+    font-family: var(--sans);
+    font-size: 44px; font-weight: 700;
+    color: var(--strong);
+    margin: 0 0 6px;
+    letter-spacing: -0.035em;
+    line-height: 1;
+  }
+  .vrun .stat .unit { font-size: 18px; color: var(--dim); font-weight: 500; letter-spacing: 0; margin-left: 6px; }
+  .vrun p { color: var(--dim); font-size: 14px; margin: 8px 0 0; line-height: 1.55; }
+
+  .corrections-head {
+    font-family: var(--sans);
+    font-size: clamp(16px, 1vw + 0.5rem, 18px);
+    color: var(--strong);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0 0 22px;
+  }
+  .corrections-head em { font-family: var(--serif); font-style: italic; color: var(--dim); font-weight: 400; }
+  .corrections { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 760px) { .corrections { grid-template-columns: 1fr; } }
+  .correction {
+    background: rgba(0,6,170,0.14);
+    border-left: 2px solid var(--wire);
+    padding: 14px 18px;
+    border-radius: 0 8px 8px 0;
+    font-family: var(--sans);
+  }
+  .correction .label { color: var(--wire); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
+  .correction p { color: var(--text); margin: 0; font-size: 14.5px; line-height: 1.5; }
+  .correction p strong { color: var(--strong); font-weight: 700; }
+
+  .ratchet {
+    margin-top: 48px;
+    padding: 24px 26px;
+    border-top: 1px solid var(--rule);
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(18px, 1.4vw + 0.4rem, 24px);
+    line-height: 1.45;
+    color: var(--strong);
+    max-width: 32ch;
+  }
+  .ratchet .label { display: block; font-family: var(--sans); font-style: normal; color: var(--wire); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 700; margin-bottom: 8px; }
+
+  /* ─── AUTHORS ─────────────────────────────────────── */
+  .authors {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+  }
   @media (max-width: 860px) { .authors { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 460px) { .authors { grid-template-columns: 1fr; } }
   .author {
-    background: rgba(18,26,103,0.35);
-    border: 1px solid var(--rule);
-    border-radius: 12px;
-    padding: 20px 22px;
-  }
-  .author .name { font-size: 18px; font-weight: 700; color: var(--strong); margin: 0 0 4px; }
-  .author .role { color: var(--wire); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; margin-bottom: 10px; }
-  .author p { margin: 0; color: var(--dim); font-size: 14px; line-height: 1.55; }
-
-  /* VALIDATION */
-  .vrun-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 16px; }
-  @media (max-width: 760px) { .vrun-grid { grid-template-columns: 1fr; } }
-  .vrun {
-    background: rgba(18,26,103,0.35);
-    border: 1px solid var(--rule);
-    border-radius: 12px;
-    padding: 20px 22px;
-  }
-  .vrun .provider { color: var(--wire); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; margin-bottom: 8px; }
-  .vrun .stat { font-size: 32px; font-weight: 800; color: var(--strong); margin: 0 0 6px; letter-spacing: -0.02em; }
-  .vrun p { color: var(--dim); font-size: 14px; margin: 0; }
-
-  /* CORRECTIONS */
-  .corrections { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 880px; }
-  @media (max-width: 760px) { .corrections { grid-template-columns: 1fr; } }
-  .correction {
-    background: rgba(0,6,170,0.18);
-    border-left: 3px solid var(--wire);
-    padding: 14px 18px;
-    border-radius: 0 8px 8px 0;
-  }
-  .correction .label { color: var(--wire); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
-  .correction p { color: var(--text); margin: 0; font-size: 14.5px; line-height: 1.5; }
-
-  /* DOWNLOAD GRID */
-  .downloads { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 16px; }
-  @media (max-width: 860px) { .downloads { grid-template-columns: 1fr; } }
-  .download {
-    background: rgba(18,26,103,0.4);
+    padding: 22px 22px 24px;
+    background: rgba(10,16,69,0.55);
     border: 1px solid var(--rule);
     border-radius: 14px;
-    padding: 24px;
-    transition: border-color .15s ease, transform .15s ease, background .15s ease;
-    text-decoration: none; color: inherit; display: block;
-    border-bottom: 1px solid var(--rule);
   }
-  .download:hover { border-color: var(--wire); transform: translateY(-2px); background: rgba(18,26,103,0.6); }
-  .download h3 { font-size: 19px; font-weight: 700; color: var(--strong); margin: 0 0 6px; letter-spacing: -0.01em; }
-  .download .meta { color: var(--wire); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; margin-bottom: 12px; }
-  .download p { margin: 0; color: var(--dim); font-size: 14.5px; line-height: 1.55; }
-  .download .open { color: var(--wire); font-size: 13px; margin-top: 12px; display: inline-block; font-weight: 600; }
+  .author .role { color: var(--wire); font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 700; margin-bottom: 14px; }
+  .author .name {
+    font-family: var(--sans);
+    font-size: 22px; font-weight: 700;
+    color: var(--strong);
+    letter-spacing: -0.02em;
+    margin: 0 0 10px;
+    line-height: 1;
+  }
+  .author p { margin: 0; color: var(--dim); font-size: 14px; line-height: 1.55; }
 
-  /* FOOTER */
+  /* ─── CLOSING ─────────────────────────────────────── */
+  .closing {
+    text-align: left;
+    max-width: 720px;
+  }
+  .closing h2 { max-width: 18ch; }
+  .closing p {
+    font-family: var(--serif);
+    font-size: clamp(20px, 1.6vw + 0.4rem, 28px);
+    line-height: 1.45;
+    color: var(--text);
+    margin: 0 0 36px;
+    max-width: 26ch;
+  }
+  .closing p em { color: var(--strong); font-style: italic; font-weight: 600; }
+
+  /* ─── FOOTER ─────────────────────────────────────── */
   footer.site {
-    padding: 40px 0 56px;
+    padding: 56px 0 64px;
     color: var(--dim);
     font-size: 13.5px;
     background: var(--deep);
   }
-  footer.site p { margin: 0 0 8px; }
+  footer.site .row { display: grid; grid-template-columns: 1.4fr 1fr; gap: 28px; align-items: start; }
+  @media (max-width: 720px) { footer.site .row { grid-template-columns: 1fr; } }
+  footer.site p { margin: 0 0 10px; line-height: 1.55; }
+  footer.site .brand-line { color: var(--strong); font-weight: 700; letter-spacing: 0.04em; }
+  footer.site .small { font-size: 12.5px; color: var(--dim); }
+  footer.site nav { display: flex; flex-wrap: wrap; gap: 8px 18px; }
+  footer.site nav a { color: var(--dim); border: 0; }
+  footer.site nav a:hover { color: var(--strong); }
 
-  /* SMALL UTIL */
-  .mono { font-family: ui-monospace,Menlo,Monaco,"SF Mono",Consolas,monospace; }
-  .pop { color: var(--strong); }
+  @media (prefers-reduced-motion: reduce) {
+    *,*::before,*::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+    html { scroll-behavior: auto; }
+  }
 </style>
 </head>
 <body>
 
-<nav class="top">
+<a class="skip" href="#main">Skip to content</a>
+
+<nav class="top" aria-label="Primary">
   <div class="inner">
-    <div class="brand"><a href="#top">HARNESS</a></div>
-    <div>
-      <a href="#what" class="hide-sm">What</a>
+    <div class="brand"><a class="bare" href="#top">HARNESS<span class="v">v0.1</span></a></div>
+    <div class="links">
+      <a href="#confession" class="hide-sm">Why</a>
       <a href="#layers" class="hide-sm">Seven layers</a>
-      <a href="#validation" class="hide-sm">Validation</a>
-      <a href="#download">Download</a>
-      <a href="https://github.com/victordelrosal/harness" target="_blank" rel="noopener">GitHub →</a>
+      <a href="#artefacts" class="hide-sm">Artefacts</a>
+      <a href="#stress-test" class="hide-sm">Stress test</a>
+      <a class="gh" href="https://github.com/victordelrosal/harness" target="_blank" rel="noopener">GitHub →</a>
     </div>
   </div>
 </nav>
 
+<main id="main">
+
 <header class="hero" id="top">
-  <div class="container">
-    <div class="hero-grid">
-      <div class="hero-copy">
-        <p class="eyebrow">v0.1 · 15 May 2026 · open · MIT</p>
-        <h1>The model is intelligence. <span class="accent">The harness is everything else.</span></h1>
-        <p class="lede">HARNESS is an open kit of working configurations, hooks, skills, and documents for getting Claude Code to do reliable, repeatable work. It is opinionated, evidence-tested, and built backwards from real failures rather than forwards from wishful features.</p>
-        <div class="ctas">
-          <a class="btn primary" href="HANDBOOK.md">Read the handbook <span class="arrow">→</span></a>
-          <a class="btn secondary" href="https://github.com/victordelrosal/harness" target="_blank" rel="noopener">View on GitHub</a>
-          <a class="btn secondary" href="CHEAT-SHEET.html">Cheat sheet</a>
-        </div>
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <div class="hero-meta">
+        <span class="item"><span class="k">Version</span> <span class="v">v0.1</span></span>
+        <span class="item"><span class="k">Dated</span> <span class="v">16 May 2026</span></span>
+        <span class="item"><span class="k">Licence</span> <span class="v">MIT · open</span></span>
       </div>
 
-      <figure class="hero-figure" aria-label="Leather horse harness — the metaphor at the heart of the kit">
-        <img src="horse-harness.jpg" alt="Close-up of a traditional leather horse harness with brass buckles, lit dramatically against a dark backdrop" loading="eager" decoding="async" />
-        <figcaption><span class="dot"></span>The literal article</figcaption>
-      </figure>
+      <h1 class="headline">
+        <span class="pre">The model is intelligence.</span>
+        <span class="strong">The harness</span> <span class="accent">is the work.</span>
+      </h1>
+
+      <p class="lede">Most agent failures aren't the model being stupid. They're <em>the harness being thin</em>: missing context, missing tools, missing feedback, missing guardrails. This is the kit for the harness. Opinionated. Evidence-tested. Built backwards from real failures rather than forwards from wishful features.</p>
+
+      <div class="ctas">
+        <a class="btn primary" href="HANDBOOK.md">Read the handbook <span class="arrow" aria-hidden="true">→</span></a>
+        <a class="btn secondary" href="https://github.com/victordelrosal/harness" target="_blank" rel="noopener">View on GitHub</a>
+        <a class="btn secondary" href="CHEAT-SHEET.html">Cheat sheet</a>
+      </div>
     </div>
 
-    <div class="callout">
-      <strong>Five-minute version.</strong> Build seven layers of harness in this order:
-      <code>memory → skills → permissions/hooks → subagents/MCP → statusline</code>. Each one delivers value before the next. The full handbook is twenty-five minutes. The starter kit is twelve files and one afternoon.
+    <figure class="hero-figure" aria-label="A leather horse harness: the metaphor at the heart of the kit">
+      <img src="horse-harness.jpg" alt="Close-up of a traditional leather horse harness with polished brass buckles, lit dramatically against a dark backdrop" loading="eager" decoding="async" fetchpriority="high" />
+      <figcaption>
+        <span class="label">The literal article</span>
+        <span class="note">The harness is what the animal cannot run without. Nobody photographs it.</span>
+      </figcaption>
+    </figure>
+  </div>
+
+  <div class="wrap">
+    <div class="trust">
+      <div class="label">Stress-tested the day it was written</div>
+      <div class="stats">
+        <span><b>Anthropic</b> · ~50 URLs</span><span class="dot">·</span>
+        <span><b>Google</b> · 25 sources</span><span class="dot">·</span>
+        <span><b>OpenAI</b> · 24 footnotes</span><span class="dot">·</span>
+        <span><b>12 corrections</b> folded back</span>
+      </div>
     </div>
   </div>
 </header>
 
-<section id="what">
-  <div class="container">
-    <p class="eyebrow">Why this exists</p>
-    <h2>It is not a model problem. It is a configuration problem.</h2>
-    <p class="intro">The single most important claim in the field, from Addy Osmani: <em>a decent model with a great harness beats a great model with a bad harness.</em> Most agent failures are not the model being stupid; they are the harness being thin. Missing context, missing tools, missing feedback, missing guardrails. That is good news. The harness is the part you control.</p>
-    <p class="intro">HARNESS distils what is known about building that harness in May 2026. Seven layers, each with concrete files. Two enforced primitives (hooks and permission deny rules) so discipline becomes part of the environment instead of a hope. The kit was built backwards from real practitioner failures, then stress-tested against three independent deep-research providers the same day it was written.</p>
+<!-- ─── THE CONFESSION ────────────────────────────── -->
+<section id="confession" aria-labelledby="confession-heading">
+  <div class="wrap">
+    <h2 id="confession-heading" class="sr-only">Why this exists</h2>
+    <div class="confession">
+      <aside class="marker" aria-hidden="true">
+        <span class="num">§01</span>
+        Why this exists
+      </aside>
+      <div class="confession-body">
+        <p>For most of 2026 we kept blaming the model. The agent forgot context, so the model wasn't smart enough. The agent ran the wrong tool, so the model wasn't smart enough. The agent deleted a file it shouldn't have touched, so the model wasn't smart enough.</p>
+
+        <p class="pull">It was never the model. It was the configuration around it.</p>
+
+        <p>The single most important claim in the field, from Addy Osmani: <em>a decent model with a great harness beats a great model with a bad harness.</em> Once you have read that line, the work of the next ten years rearranges itself. The model is intelligence. <strong>The harness is everything else</strong>, and everything else is where the work has quietly been the whole time.</p>
+
+        <p>HARNESS is the part of that work made public. Seven layers, each with concrete files. Two enforced primitives, so discipline becomes part of the environment instead of a hope. Built backwards from real practitioner failures. Stress-tested against three independent deep-research providers the day it was written. Twelve corrections folded back, on the record, in <a href="VALIDATION.md">VALIDATION.md</a>.</p>
+      </div>
+    </div>
   </div>
 </section>
 
+<!-- ─── THE SEVEN LAYERS ─────────────────────────── -->
 <section id="layers" class="dark">
-  <div class="container">
-    <p class="eyebrow">The architecture</p>
-    <h2>Seven layers, one closed loop.</h2>
-    <p class="intro">Birgitta Böckeler's framework: every harness control is either a <em>guide</em> (feedforward, steers before the agent acts) or a <em>sensor</em> (feedback, observes after). Build both. Guides without sensors is hope. Sensors without guides is thrashing.</p>
+  <div class="wrap">
+    <p class="eyebrow">§02 · The architecture</p>
+    <h2>Seven layers. <span class="accent">One closed loop.</span></h2>
+    <p class="lede">Birgitta Böckeler's framework: every harness control is either a <em>guide</em> (feedforward, steers before the agent acts) or a <em>sensor</em> (feedback, observes after). Build both. <em>Guides without sensors is hope. Sensors without guides is thrashing.</em></p>
 
     <div class="layers">
-      <div class="layer">
-        <span class="n">01</span>
-        <div class="type">Guide</div>
-        <h3>Memory · CLAUDE.md</h3>
+      <article class="layer">
+        <div class="row">
+          <span class="n"><b>01</b> Guide</span>
+          <span class="kind">Memory</span>
+        </div>
+        <h3>CLAUDE.md</h3>
         <p>Three files, three scopes. Global &lt;30 lines, project source-controlled, local gitignored. Read as context, not enforced as config.</p>
-      </div>
-      <div class="layer">
-        <span class="n">02</span>
-        <div class="type">Guide</div>
-        <h3>Skills</h3>
-        <p>Reusable recipes loaded on-demand by trigger phrase. Build the second time you do something. Seven good skills beat seventy half-built ones.</p>
-      </div>
-      <div class="layer">
-        <span class="n">03</span>
-        <div class="type">Guide · Orchestration</div>
-        <h3>Subagents</h3>
-        <p>Isolated parallel sessions with their own context. Plan, Explore, code-reviewer, general-purpose. Route to the cheapest model that can do the job.</p>
-      </div>
-      <div class="layer">
-        <span class="n">04</span>
-        <div class="type">Tools</div>
-        <h3>MCP servers</h3>
-        <p>4–6 always-on. Per-project enablement for money, email, customer data. Auth-scope minimisation everywhere.</p>
-      </div>
-      <div class="layer">
-        <span class="n">05</span>
-        <div class="type">Sensor · Enforced</div>
-        <h3>Hooks</h3>
-        <p>Deterministic shell scripts on lifecycle events. PreToolUse fires before any permission check. The one place where you get guaranteed behaviour.</p>
-      </div>
-      <div class="layer">
-        <span class="n">06</span>
-        <div class="type">Sensor · Enforced</div>
-        <h3>Permissions</h3>
-        <p>Six modes. Deny rules survive <span class="mono">--dangerously-skip-permissions</span>. Build the deny list first; promote frequently-asked commands to allow.</p>
-      </div>
-      <div class="layer">
-        <span class="n">07</span>
-        <div class="type">Observability</div>
-        <h3>Statusline + Output styles</h3>
-        <p>Show model, context-remaining, cost, mode. Prevents the silent footgun of running in the wrong mode.</p>
-      </div>
-      <div class="layer">
-        <span class="n">+</span>
-        <div class="type">Composes with the above</div>
+        <p class="skip"><b>Skip it →</b> the agent forgets what your project is on every other turn.</p>
+      </article>
+
+      <article class="layer">
+        <div class="row">
+          <span class="n"><b>02</b> Guide</span>
+          <span class="kind">Skills</span>
+        </div>
+        <h3>Reusable recipes</h3>
+        <p>Loaded on-demand by trigger phrase. Build the second time you do something. Seven good skills beat seventy half-built ones.</p>
+        <p class="skip"><b>Skip it →</b> you teach the agent the same workflow every Monday morning.</p>
+      </article>
+
+      <article class="layer">
+        <div class="row">
+          <span class="n"><b>03</b> Guide · Orchestration</span>
+          <span class="kind">Subagents</span>
+        </div>
+        <h3>Isolated parallel sessions</h3>
+        <p>Plan, Explore, code-reviewer, general-purpose. Route to the cheapest model that can do the job; isolate context budgets so the main thread stays clean.</p>
+        <p class="skip"><b>Skip it →</b> one giant context that costs more, remembers worse, and crashes louder.</p>
+      </article>
+
+      <article class="layer">
+        <div class="row">
+          <span class="n"><b>04</b> Tools</span>
+          <span class="kind">MCP</span>
+        </div>
+        <h3>4–6 servers, always on</h3>
+        <p>Per-project enablement for money, email, customer data. Auth-scope minimisation everywhere. Treat each server as a supply-chain edge, not a feature.</p>
+        <p class="skip"><b>Skip it →</b> the agent can talk to your data but never act on it, or worse, acts with the wrong scope.</p>
+      </article>
+
+      <article class="layer">
+        <div class="row">
+          <span class="n"><b>05</b> Sensor · Enforced</span>
+          <span class="kind sensor">Hooks</span>
+        </div>
+        <h3>Deterministic shell scripts on lifecycle events</h3>
+        <p>PreToolUse fires before any permission check. The one place where you get guaranteed behaviour. Build the fs-guard and the secret-scan hook before anything else.</p>
+        <p class="skip"><b>Skip it →</b> the agent will eventually run the destructive command you assumed was safe.</p>
+      </article>
+
+      <article class="layer">
+        <div class="row">
+          <span class="n"><b>06</b> Sensor · Enforced</span>
+          <span class="kind sensor">Permissions</span>
+        </div>
+        <h3>Six modes, deny rules survive everything</h3>
+        <p>Deny rules survive <span class="mono">--dangerously-skip-permissions</span>. Build the deny list first; promote frequently-asked commands to allow. Full pipeline: <span class="mono">Hooks → Deny → Allow → Ask → Mode</span>.</p>
+        <p class="skip"><b>Skip it →</b> you spend your days clicking "Allow" instead of writing code.</p>
+      </article>
+
+      <article class="layer">
+        <div class="row">
+          <span class="n"><b>07</b> Observability</span>
+          <span class="kind">Statusline</span>
+        </div>
+        <h3>Statusline + output styles</h3>
+        <p>Show model, context-remaining, cost, mode. Prevents the silent footgun of running in the wrong mode for an hour without noticing.</p>
+        <p class="skip"><b>Skip it →</b> three hours into a session you discover you've been on the wrong model the whole time.</p>
+      </article>
+
+      <article class="layer">
+        <div class="row">
+          <span class="n">+</span>
+          <span class="kind">Composes</span>
+        </div>
         <h3>Plugins · slash commands · git worktrees</h3>
-        <p>Load-bearing primitives that compose with the seven. The decomposition is pedagogical; the inventory keeps growing.</p>
-      </div>
+        <p>Load-bearing primitives that compose with the seven. The decomposition is pedagogical; the inventory keeps growing as the platform does.</p>
+        <p class="skip"><b>Skip it →</b> you reinvent each of these the long way, on a Friday afternoon, in a panic.</p>
+      </article>
+    </div>
+
+    <div class="loop">
+      <strong>The loop.</strong> Guides set up the agent so it acts correctly. Sensors observe what actually happened and feed it back as memory and as enforcement. <em>Hooks → Deny → Allow → Ask → Mode</em> is the control pipeline; everything you write goes through it whether you wrote it that way or not.
     </div>
   </div>
 </section>
 
-<section id="validation">
-  <div class="container">
-    <p class="eyebrow">Stress test</p>
-    <h2>The kit was adversarially validated the day it was written.</h2>
-    <p class="intro">41 hypotheses, each falsifiable, sent to three independent deep-research providers with the explicit instruction to surface disconfirming evidence as eagerly as confirming. Where they agreed, the verdict held. Where they disagreed, primary sources won. Twelve corrections were folded back. Read the full appendix in <a href="VALIDATION.md">VALIDATION.md</a>.</p>
+<!-- ─── ARTEFACTS ────────────────────────────────── -->
+<section id="artefacts">
+  <div class="wrap">
+    <p class="eyebrow">§03 · The artefacts</p>
+    <h2>Take what you need. <span class="accent">It is all open.</span></h2>
+    <p class="lede">Every deliverable is MIT-licensed and designed to be lifted directly into your <span class="mono">~/.claude/</span> directory. Working files, not reference documentation. <em>Read the theory if you want to understand. Take the starter kit if you want to start.</em></p>
+
+    <div class="artefacts">
+      <a class="artefact" href="THEORY.md">
+        <div class="meta">Theory · 12 min</div>
+        <h3>What a harness is, and why it matters.</h3>
+        <p>Cross-checked against Böckeler, Osmani, Trivedy, Anthropic. The conceptual ground floor.</p>
+        <span class="open">THEORY.md <span class="arrow">→</span></span>
+      </a>
+      <a class="artefact" href="HANDBOOK.md">
+        <div class="meta">Long-form · 25 min</div>
+        <h3>The full reference handbook.</h3>
+        <p>Seven layers, five archetypes, the 80/20 hacks, the anti-patterns, the capability test.</p>
+        <span class="open">HANDBOOK.md <span class="arrow">→</span></span>
+      </a>
+      <a class="artefact" href="GETTING-STARTED.md">
+        <div class="meta">Build path · 8 min</div>
+        <h3>Six weeks. One layer per week.</h3>
+        <p>Each week leaves you measurably more capable than the last. No mystery boxes.</p>
+        <span class="open">GETTING-STARTED.md <span class="arrow">→</span></span>
+      </a>
+      <a class="artefact" href="starter-kit/">
+        <div class="meta">Files · drop-in</div>
+        <h3>The starter kit.</h3>
+        <p>CLAUDE.md template, settings.json with deny-list, two PreToolUse hooks, four subagents, INDEX.md.</p>
+        <span class="open">Browse starter-kit/ <span class="arrow">→</span></span>
+      </a>
+      <a class="artefact" href="CHEAT-SHEET.html">
+        <div class="meta">One page · 2 min</div>
+        <h3>The cheat sheet.</h3>
+        <p>Printable. Pin to your wall. Every move on one screen, including the deny-list seed.</p>
+        <span class="open">CHEAT-SHEET.html <span class="arrow">→</span></span>
+      </a>
+      <a class="artefact" href="VALIDATION.md">
+        <div class="meta">Methodology · 8 min</div>
+        <h3>How the kit was stress-tested.</h3>
+        <p>41 falsifiable hypotheses, three deep-research providers, twelve corrections folded back. Run your own pass.</p>
+        <span class="open">VALIDATION.md <span class="arrow">→</span></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── STRESS TEST ──────────────────────────────── -->
+<section id="stress-test" class="dark">
+  <div class="wrap">
+    <p class="eyebrow">§04 · The stress test</p>
+    <h2>We sent it to three deep-research providers the day we wrote it. <span class="accent">We told them to break it.</span></h2>
+    <p class="lede">41 hypotheses, each falsifiable, dispatched to three independent providers with the explicit instruction to surface disconfirming evidence as eagerly as confirming. Where they agreed, the verdict held. Where they disagreed, primary sources won. Twelve corrections were folded back. Full appendix in <a href="VALIDATION.md">VALIDATION.md</a>.</p>
 
     <div class="vrun-grid">
-      <div class="vrun">
-        <div class="provider">Anthropic · Deep Research</div>
-        <div class="stat">~50 URLs</div>
-        <p>Four arXiv papers cited. Two substantive corrections found. Most rigorous of the three.</p>
-      </div>
-      <div class="vrun">
-        <div class="provider">Google · Deep Research</div>
-        <div class="stat">25 sources</div>
-        <p>Strong tables, confirmed the missing sixth permission mode independently. Surfaced one false-negative hypothesis.</p>
-      </div>
-      <div class="vrun">
-        <div class="provider">OpenAI · Deep Research</div>
-        <div class="stat">24 footnotes</div>
-        <p>Thinnest of the three. Confirmed the defensible core; weaker on long-tail claims.</p>
-      </div>
+      <article class="vrun">
+        <div class="provider">Anthropic Deep Research</div>
+        <div class="stat">~50<span class="unit">URLs</span></div>
+        <p>Four arXiv papers cited. Two substantive corrections found. The most rigorous of the three.</p>
+      </article>
+      <article class="vrun">
+        <div class="provider">Google Deep Research</div>
+        <div class="stat">25<span class="unit">sources</span></div>
+        <p>Strong tables. Independently confirmed the missing sixth permission mode. Surfaced one false-negative hypothesis.</p>
+      </article>
+      <article class="vrun">
+        <div class="provider">OpenAI Deep Research</div>
+        <div class="stat">24<span class="unit">footnotes</span></div>
+        <p>Thinnest of the three. Confirmed the defensible core; weaker on long-tail claims. Useful triangulation.</p>
+      </article>
     </div>
 
-    <p class="intro" style="margin-top: 48px;"><strong style="color:var(--strong)">Corrections that made it back into the handbook:</strong></p>
+    <p class="corrections-head">Corrections folded back into the handbook. <em>None of these were small.</em></p>
 
     <div class="corrections">
-      <div class="correction">
+      <article class="correction">
         <div class="label">Factual error fixed</div>
         <p>A <strong>sixth permission mode</strong> (<span class="mono">auto</span>) shipped 2026-03-24. The original draft listed only five.</p>
-      </div>
-      <div class="correction">
+      </article>
+      <article class="correction">
         <div class="label">Factual error fixed</div>
         <p>The full control pipeline is <strong>Hooks → Deny → Allow → Ask → Mode</strong>, not just Deny → Ask → Allow.</p>
-      </div>
-      <div class="correction">
+      </article>
+      <article class="correction">
         <div class="label">Overclaim qualified</div>
         <p>50% token reduction from model routing → <strong>40–70% on research tasks; can be negative ROI on small mechanical tasks</strong>.</p>
-      </div>
-      <div class="correction">
+      </article>
+      <article class="correction">
         <div class="label">Overclaim qualified</div>
         <p>Project-revenue claim retired. <strong>Single-practitioner data, not a base rate.</strong></p>
-      </div>
-      <div class="correction">
+      </article>
+      <article class="correction">
         <div class="label">Missing primitive added</div>
-        <p><strong>Anthropic devcontainer</strong> as canonical safe sandbox for <span class="mono">--dangerously-skip-permissions</span>.</p>
-      </div>
-      <div class="correction">
+        <p><strong>Anthropic devcontainer</strong> added as the canonical safe sandbox for <span class="mono">--dangerously-skip-permissions</span>.</p>
+      </article>
+      <article class="correction">
         <div class="label">Missing anti-pattern added</div>
-        <p><strong>Skill and MCP supply-chain risk.</strong> Anthropic's own skills docs warn about malicious skills.</p>
-      </div>
+        <p><strong>Skill and MCP supply-chain risk.</strong> Anthropic's own skills docs warn explicitly about malicious skills.</p>
+      </article>
     </div>
+
+    <blockquote class="ratchet">
+      <span class="label">The Ratchet Principle</span>
+      Every observed failure becomes a tighter rule in the next release. The kit only ever gets quieter and harder to break.
+    </blockquote>
   </div>
 </section>
 
-<section id="download" class="dark">
-  <div class="container">
-    <p class="eyebrow">The artefacts</p>
-    <h2>Take what you need.</h2>
-    <p class="intro">Every deliverable is open, MIT-licensed, and designed to be lifted directly into your <span class="mono">~/.claude/</span> directory. Working files, not reference documentation.</p>
-
-    <div class="downloads">
-      <a class="download" href="HANDBOOK.md">
-        <div class="meta">Long-form · 25 min</div>
-        <h3>Handbook</h3>
-        <p>The full guide. Seven layers, five archetypes, the 80/20 hacks, anti-patterns, the capability test. Reference.</p>
-        <span class="open">Open HANDBOOK.md →</span>
-      </a>
-      <a class="download" href="GETTING-STARTED.md">
-        <div class="meta">Build path · 8 min</div>
-        <h3>Getting Started</h3>
-        <p>Six weeks. One layer per week. Each week leaves you measurably more capable than the last.</p>
-        <span class="open">Open GETTING-STARTED.md →</span>
-      </a>
-      <a class="download" href="CHEAT-SHEET.html">
-        <div class="meta">Single page · 2 min</div>
-        <h3>Cheat Sheet</h3>
-        <p>Printable. Pin to your wall. All the moves on one screen.</p>
-        <span class="open">Open CHEAT-SHEET.html →</span>
-      </a>
-      <a class="download" href="THEORY.md">
-        <div class="meta">Theory · 12 min</div>
-        <h3>Theory</h3>
-        <p>What a harness is and why it matters. Cross-checked against Böckeler, Osmani, Trivedy, Anthropic.</p>
-        <span class="open">Open THEORY.md →</span>
-      </a>
-      <a class="download" href="starter-kit/">
-        <div class="meta">Files · drop-in</div>
-        <h3>Starter Kit</h3>
-        <p>CLAUDE.md template, settings.json with deny-list, two PreToolUse hooks, four subagents, INDEX.md template.</p>
-        <span class="open">Browse starter-kit/ →</span>
-      </a>
-      <a class="download" href="VALIDATION.md">
-        <div class="meta">Methodology · 8 min</div>
-        <h3>Validation Appendix</h3>
-        <p>How the kit was stress-tested. The corrections that were folded back. Run your own pass.</p>
-        <span class="open">Open VALIDATION.md →</span>
-      </a>
-    </div>
-  </div>
-</section>
-
+<!-- ─── AUTHORS ──────────────────────────────────── -->
 <section id="authors">
-  <div class="container">
-    <p class="eyebrow">Authors</p>
-    <h2>Four agents, one panel, one human director.</h2>
-    <p class="intro">The kit was authored by a panel of AI agents working in parallel sessions, then reviewed against each other before publishing. Human direction throughout. First names only; the work is what matters.</p>
+  <div class="wrap">
+    <p class="eyebrow">§05 · Signed</p>
+    <h2>Four agents. <span class="accent">One panel. One human director.</span></h2>
+    <p class="lede">The kit was authored by a panel of AI agents working in parallel sessions, then reviewed against each other before publishing. Human direction throughout. First names only; the work is what matters.</p>
 
     <div class="authors">
-      <div class="author">
-        <p class="name">Lars</p>
+      <article class="author">
         <div class="role">Framing · Academic rigour</div>
+        <p class="name">Lars</p>
         <p>Led the architecture of the handbook. Insisted on the capability test. Wrote the closing argument.</p>
-      </div>
-      <div class="author">
-        <p class="name">Theo</p>
+      </article>
+      <article class="author">
         <div class="role">Engineering · Hooks</div>
-        <p>Built the starter kit. Wrote the two PreToolUse hooks. Drafted the settings.json deny rules.</p>
-      </div>
-      <div class="author">
-        <p class="name">Felix</p>
+        <p class="name">Theo</p>
+        <p>Built the starter kit. Wrote the two PreToolUse hooks. Drafted the <span class="mono">settings.json</span> deny rules.</p>
+      </article>
+      <article class="author">
         <div class="role">Security review</div>
+        <p class="name">Felix</p>
         <p>Locked the deny list. Reviewed the secret-scan patterns. Surfaced the auth-scope minimisation principle.</p>
-      </div>
-      <div class="author">
-        <p class="name">Rian</p>
+      </article>
+      <article class="author">
         <div class="role">Positioning · Copy</div>
+        <p class="name">Rian</p>
         <p>Shaped the public narrative, the cheat sheet, and this landing page. Made the kit findable, not just usable.</p>
-      </div>
+      </article>
     </div>
   </div>
 </section>
 
+<!-- ─── CLOSING ──────────────────────────────────── -->
+<section id="close" class="dark">
+  <div class="wrap closing">
+    <p class="eyebrow">§06 · One last thing</p>
+    <h2>Stop blaming the model. <span class="accent">Build the harness.</span></h2>
+    <p>Twenty-five minutes of reading, one afternoon of setup, and you stop running an LLM and start running an agent. <em>The model has never been the bottleneck.</em></p>
+    <div class="ctas">
+      <a class="btn primary" href="HANDBOOK.md">Read the handbook <span class="arrow" aria-hidden="true">→</span></a>
+      <a class="btn secondary" href="https://github.com/victordelrosal/harness" target="_blank" rel="noopener">View on GitHub</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
 <footer class="site">
-  <div class="container">
-    <p><strong style="color:var(--strong)">HARNESS</strong> · v0.1 · 15 May 2026 · MIT licence · made in Westport, Ireland</p>
-    <p>Open issues at <a href="https://github.com/victordelrosal/harness/issues" target="_blank" rel="noopener">github.com/victordelrosal/harness/issues</a>. The Ratchet Principle applies: every observed failure becomes a tighter rule in the next release.</p>
-    <p>Not affiliated with Anthropic. Not a replacement for the Claude Code docs. Read them. This kit assumes you have.</p>
+  <div class="wrap row">
+    <div>
+      <p class="brand-line">HARNESS · v0.1 · 16 May 2026</p>
+      <p>MIT licence. Made in Westport, Ireland. Open issues at <a href="https://github.com/victordelrosal/harness/issues" target="_blank" rel="noopener">github.com/victordelrosal/harness/issues</a>.</p>
+      <p class="small">The Ratchet Principle applies: every observed failure becomes a tighter rule in the next release.</p>
+      <p class="small">Not affiliated with Anthropic. Not a replacement for the Claude Code docs; read them. This kit assumes you have.</p>
+    </div>
+    <nav aria-label="Footer">
+      <a href="#confession">Why</a>
+      <a href="#layers">Seven layers</a>
+      <a href="#artefacts">Artefacts</a>
+      <a href="#stress-test">Stress test</a>
+      <a href="#authors">Authors</a>
+      <a href="HANDBOOK.md">Handbook</a>
+      <a href="VALIDATION.md">Validation</a>
+      <a href="https://github.com/victordelrosal/harness" target="_blank" rel="noopener">GitHub</a>
+    </nav>
   </div>
 </footer>
 
